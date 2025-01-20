@@ -13,7 +13,7 @@ class User(Base):
     lastname = Column(String)
     age = Column(Integer)
     slag = Column(String, unique=True)
-    tasks = relationship('Task', back_populates='users')
+    tasks = relationship('Task', back_populates='user')
 
 
 # from sqlalchemy.schema import CreateTable

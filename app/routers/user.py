@@ -10,9 +10,9 @@ from sqlalchemy import insert, select, update, delete
 from sqlalchemy.orm import Session
 
 # Функция подключения к БД
-from app.backend.db_depends import get_db
-from app.models.user import User
-from app.schemas import CreateUser, UpdateUser
+from backend.db_depends import get_db
+from models.user import User
+from schemas import CreateUser, UpdateUser
 
 router = APIRouter(prefix='/user', tags=['user'])
 
