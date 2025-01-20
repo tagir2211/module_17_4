@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, status, HTTPException
 # Сессия БД
 from sqlalchemy.orm import Session
 # Функция подключения к БД
-from app.backend.db_depends import get_db
+from backend.db_depends import get_db
 # Аннотации, Модели БД и Pydantic.
 from typing import Annotated
-from app.models.task import Task
-from app.models.user import User
-from app.schemas import CreateTask, UpdateTask
+from models.task import Task
+from models.user import User
+from schemas import CreateTask, UpdateTask
 # Функции работы с записями.
 from sqlalchemy import insert, select, update, delete
 # Функция создания slug-строки
@@ -55,14 +55,15 @@ async def create_task(db: Annotated[Session, Depends(get_db)], create_task: Crea
                             detail='Пользователь с указанным id не существует')
     else:
         # проверяем есть ли такая задача у данного пользователя
+        slug = create_task.title + str(create_task.user_id)
         tasks = db.scalar(
-            select(Task).where(Task.user_id == create_task.user_id).where(Task.slug == slugify(create_task.title)))
+            select(Task).where(Task.user_id == create_task.user_id).where(Task.slug == slugify(slug)))
         if tasks is None:
             db.execute(insert(Task).values(
                 title=create_task.title,
                 content=create_task.content,
                 priority=create_task.priority,
-                slug=slugify(create_task.title),
+                slug=slugify(slug),
                 user_id=create_task.user_id))
             db.commit()
             return {
